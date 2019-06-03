@@ -288,11 +288,11 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
          if (maxAmplScaled == 0) {
            return;
          }
-         double db = 20*Math.log10(maxAmplScaled);Ø
+         double db = 20*Math.log10(maxAmplScaled);
          WritableMap body = Arguments.createMap();
-         body.putDouble(“currentTime”, stopWatch.getTimeSeconds());
-         body.putDouble(“currentPeakMetering”, db);
-         sendEvent(“recordingProgress”, body);
+         body.putDouble("currentTime", stopWatch.getTimeSeconds());
+         body.putDouble("currentPeakMetering", db);
+         sendEvent("recordingProgress", body);
        }
      }
    }, 0, 200);
