@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.IllegalAccessException;
 import java.lang.NoSuchMethodException;
+import java.lang.Math;
 
 class AudioRecorderManager extends ReactContextBaseJavaModule {
 
@@ -278,18 +279,24 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
   }
 
   private void startTimer(){
-    timer = new Timer();
-    timer.scheduleAtFixedRate(new TimerTask() {
-      @Override
-      public void run() {
-        if (!isPaused) {
-          WritableMap body = Arguments.createMap();
-          body.putDouble("currentTime", stopWatch.getTimeSeconds());
-          sendEvent("recordingProgress", body);
-        }
-      }
-    }, 0, 1000);
-  }
+   timer = new Timer();
+   timer.scheduleAtFixedRate(new TimerTask() {
+     @Override
+     public void run() {
+       if (!isPaused && recorder != null) {
+         double maxAmplScaled = recorder.getMaxAmplitude()/32767.0;
+         if (maxAmplScaled == 0) {
+           return;
+         }
+         double db = 20*Math.log10(maxAmplScaled);Ø
+         WritableMap body = Arguments.createMap();
+         body.putDouble(“currentTime”, stopWatch.getTimeSeconds());
+         body.putDouble(“currentPeakMetering”, db);
+         sendEvent(“recordingProgress”, body);
+       }
+     }
+   }, 0, 200);
+ }
 
   private void stopTimer(){
     if (timer != null) {
